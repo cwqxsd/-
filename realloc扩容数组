@@ -1,0 +1,85 @@
+  #include <iostream>
+#include <cstdlib>
+
+class DynamicArray {
+private:
+    int* array;
+    size_t size;
+    size_t capacity;
+
+public:
+    // Constructor
+    DynamicArray(size_t initialCapacity = 4) {
+        array = (int*)malloc(initialCapacity * sizeof(int));
+        size = 0;
+        capacity = initialCapacity;
+    }
+
+    // Destructor
+    ~DynamicArray() {
+        free(array);
+    }
+
+    // Add element and resize if needed
+    void push_back(int element) {
+        if (size >= capacity) {
+            // Double the capacity
+            size_t newCapacity = capacity * 2;
+            int* newArray = (int*)realloc(array, newCapacity * sizeof(int));
+            
+            if (newArray == nullptr) {
+                std::cerr << "Memory reallocation failed!" << std::endl;
+                return;
+            }
+            
+            array = newArray;
+            capacity = newCapacity;
+        }
+        
+        array[size++] = element;
+    }
+
+    // Get current size
+    size_t getSize() const {
+        return size;
+    }
+
+    // Get current capacity
+    size_t getCapacity() const {
+        return capacity;
+    }
+
+    // Get element at index
+    int get(size_t index) const {
+        if (index >= size) {
+            throw std::out_of_range("Index out of bounds");
+        }
+        return array[index];
+    }
+
+    // Print array
+    void print() const {
+        std::cout << "Array contents: ";
+        for (size_t i = 0; i < size; i++) {
+            std::cout << array[i] << " ";
+        }
+        std::cout << "\nSize: " << size << ", Capacity: " << capacity << std::endl;
+    }
+};
+
+// Example usage
+int main() {
+    DynamicArray arr;
+    
+    std::cout << "Initial state:" << std::endl;
+    arr.print();
+
+    // Add some elements
+    for (int i = 1; i <= 10; i++) {
+        arr.push_back(i);
+        std::cout << "\nAfter adding " << i << ":" << std::endl;
+        arr.print();
+    }
+
+    return 0;
+}
